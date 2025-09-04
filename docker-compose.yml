@@ -1,0 +1,51 @@
+
+services:
+  shop_api:
+    build:
+      context: ./shop_api
+    container_name: shop_api
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./shop_api/uploads:/app/uploads
+      - ./shop_api/font:/app/font
+    working_dir: /app
+    # command: go run main.go
+    environment:
+      - GO_ENV=production
+    depends_on: []
+    networks:
+      - shop
+
+  shop_react:
+    build:
+      context: ./shop_react/shop
+    container_name: shop_react
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: bun run start
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - shop_api
+    volumes:
+      - ./shop_react/shop:/app
+    networks:
+      - shop
+
+# Add a database service if needed, e.g. PostgreSQL or MySQL
+#  db:
+#    image: postgres:15
+#    environment:
+#      POSTGRES_USER: user
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: shop
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - db_data:/var/lib/postgresql/data
+
+networks:
+  shop:
+    external: true
