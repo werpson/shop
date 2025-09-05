@@ -93,22 +93,11 @@ const UserPage = () => {
         if (loadingCreate) return;
         setLoadingCreate(true);
         const formData = new FormData(e.currentTarget);
-        const newUser = {
-          username: formData.get("username") as string,
-          password: formData.get("password") as string,
-          first_name: formData.get("first_name") as string,
-          last_name: formData.get("last_name") as string,
-          permission: formData.get("permission") as string,
-          status: formData.get("status") as string,
-        };
         try {
             const response = await fetch("https://api.maproflow.com/users", {
               credentials: "include",  
               method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newUser),
+                body: formData,
             });
             if (!response.ok) throw new Error("Failed to create user");
             const createdUser = await response.json();
@@ -127,15 +116,6 @@ const UserPage = () => {
         if (loadingEdit) return;
         setLoadingEdit(true);
         const formData = new FormData(e.currentTarget);
-        const updatedUser = {
-          id: editUser?.id,
-          username: formData.get("username") as string,
-          password: formData.get("password") as string,
-          first_name: formData.get("first_name") as string,
-          last_name: formData.get("last_name") as string,
-          permission: formData.get("permission") as string,
-          status: formData.get("status") as string,
-        };
         try {
             const response = await fetch(`https://api.maproflow.com/users`, {
               credentials: "include",  
@@ -143,7 +123,7 @@ const UserPage = () => {
                 headers: {
                 "Content-Type": "application/json",
                 },
-                body: JSON.stringify(updatedUser),
+                body: formData,
             });
             if (!response.ok) throw new Error("Failed to update user");
             const updated = await response.json();
