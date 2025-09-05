@@ -132,7 +132,7 @@ const Header = () => {
       <header className="w-full bg-blue-600 text-white shadow-md sticky top-0 z-50">
         <nav className="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
           <div className="text-2xl font-bold flex-1">
-            <Link href="/" className="hover:text-blue-100 transition-colors">ShopApp</Link>
+            <Link href="/" className="hover:text-blue-100 transition-colors">Maproflow</Link>
           </div>
           {/* Hamburger button */}
           <button
