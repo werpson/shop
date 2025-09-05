@@ -1,4 +1,3 @@
-
 services:
   shop_api:
     build:
@@ -26,11 +25,9 @@ services:
     working_dir: /app
     command: bun run start
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     depends_on:
       - shop_api
-    volumes:
-      - ./shop_react/shop:/app
     networks:
       - shop
 
