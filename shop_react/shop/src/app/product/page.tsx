@@ -327,7 +327,7 @@ const ProductPage = () => {
                 <div className="mb-2"><span className="font-semibold">รายละเอียด:</span> {detailProduct.detail}</div>
                 <div className="mb-2"><span className="font-semibold">สถานะ:</span> {detailProduct.status === "a" ? "ใช้งานอยู่" : "ไม่ได้ใช้งาน"}</div>
                 {/* barcode แสดงใน modal รายละเอียด */}
-                {/* <div className="mb-2"><span className="font-semibold">Barcode:</span> {detailProduct.barcode || "-"}</div> */}
+                <div className="mb-2"><span className="font-semibold">Barcode:</span> {detailProduct.barcode || "-"}</div>
               </div>
             </div>
             <div className="text-center mt-4">
@@ -530,6 +530,10 @@ const ProductPage = () => {
           <div className="max-w-lg max-h-[90vh] mx-auto my-10 bg-white rounded-lg overflow-y-auto p-4">
             <h2 className="text-lg font-bold mb-4">แก้ไขข้อมูล</h2>
             <form onSubmit={handleSubmit}>
+                <div className="md4">
+                  <label className="block text-sm font-medium mb-2">Barcode (ถ้ามี)</label>
+                  <div>{editProduct.barcode}</div>
+                </div>
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">ชื่อสินค้า</label>
                     <input
@@ -580,35 +584,6 @@ const ProductPage = () => {
                     />
                   </div>
                 </div>
-                {/* barcode input (edit) */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Barcode (ถ้ามี)</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      name="barcode"
-                      value={barcodeValue}
-                      onChange={e => setBarcodeValue(e.target.value)}
-                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="กรอกหรือสแกน barcode"
-                    />
-                    <button type="button" onClick={() => { setBarcodeValue(randomDigits(10)); }}
-                      className="p-2 bg-gray-200 hover:bg-green-200 rounded-full border border-gray-300 flex items-center justify-center"
-                      title="สุ่มเลข 10 หลัก">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-green-700">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                      </svg>
-                    </button>
-                    <button type="button" onClick={() => { console.log('[ProductPage] barcode scan button clicked (edit)'); setShowBarcodeModal(true); setBarcodeTarget("edit"); }}
-                      className="p-2 bg-gray-200 hover:bg-blue-200 rounded-full border border-gray-300 flex items-center justify-center"
-                      title="สแกนบาร์โค้ด">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-700">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75V5.25A2.25 2.25 0 014.5 3h1.5m12 0h1.5a2.25 2.25 0 012.25 2.25v1.5m0 10.5v1.5A2.25 2.25 0 0119.5 21h-1.5m-12 0H4.5A2.25 2.25 0 012.25 19.5v-1.5M7.5 12h.008v.008H7.5V12zm3 0h.008v.008H10.5V12zm3 0h.008v.008H13.5V12zm3 0h.008v.008H16.5V12z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">ประเภทสินค้า</label>
                   <select name="type" defaultValue={editProduct.type} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
