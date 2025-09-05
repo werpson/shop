@@ -147,10 +147,7 @@ const UserPage = () => {
       {
         credentials: "include",      
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userID),
+        body: userID,
       });
       if (!response.ok) throw new Error("Failed to delete user");
       setShowDeleteModal(false);
@@ -379,6 +376,7 @@ const UserPage = () => {
           <div className="max-w-lg max-h-[90vh] mx-auto my-10 bg-white rounded-lg overflow-y-auto p-4">
             <h2 className="text-lg font-bold mb-4">แก้ไขข้อมูลผู้ใช้งาน</h2>
             <form onSubmit={handleEditUser}>
+              <input type="hidden" name="id" value={editUser.id} />
               <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">ชื่อ</label>
