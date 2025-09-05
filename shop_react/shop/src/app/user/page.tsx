@@ -42,35 +42,42 @@ const UserPage = () => {
   const [searchStatus, setSearchStatus] = useState(""); // "" | "a" | "u"
   const [searchPermission, setSearchPermission] = useState("");
 
+
+    // ฟังก์ชันรีเฟรชข้อมูล user
+    const refreshUsers = () => {
+      setLoading(true);
+      fetch("https://api.maproflow.com/users",
+        {
+          credentials: "include",
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then(async (res) => {
+              if (!res.ok) {
+                throw new Error("Not authenticated");
+              }
+              const contentType = res.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                return res.json();
+              }
+              return null;
+            })
+        .then((data) => {
+          if (data) setUsers(data || []);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(err.message);
+          setLoading(false);
+        });
+    };
+
     useEffect(() => {
-        fetch("https://api.maproflow.com/users",
-          {
-            credentials: "include",
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-          .then(async (res) => {
-                if (!res.ok) {
-                  throw new Error("Not authenticated");
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                  return res.json();
-                }
-                return null;
-              })
-          .then((data) => {
-            if (data) setUsers(data || []);
-            setLoading(false);
-          })
-          .catch((err) => {
-            setError(err.message);
-            setLoading(false);
-          });
-      }, []);
+      refreshUsers();
+    }, []);
     
       if (loading) return <div>กำลังโหลดข้อมูล...</div>;
       if (error) return <div>เกิดข้อผิดพลาด: {error}</div>;
@@ -93,12 +100,11 @@ const UserPage = () => {
             const response = await fetch("https://api.maproflow.com/users", {
               credentials: "include",  
               method: "POST",
-                body: formData,
+              body: formData,
             });
             if (!response.ok) throw new Error("Failed to create user");
-            const createdUser = await response.json();
-            setUsers([...users, createdUser]);
             setShowCreateModal(false);
+            refreshUsers();
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -116,16 +122,12 @@ const UserPage = () => {
             const response = await fetch(`https://api.maproflow.com/users`, {
               credentials: "include",  
               method: "PUT",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: formData,
+              body: formData,
             });
             if (!response.ok) throw new Error("Failed to update user");
-            const updated = await response.json();
-            setUsers(users.map((u) => (u.id === updated.id ? updated : u)));
             setShowEditModal(false);
             setEditUser(null);
+            refreshUsers();
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -134,34 +136,32 @@ const UserPage = () => {
       };
 
     // ฟังก์ชันลบผู้ใช้งาน
-    const handleDeleteUser = async (id: any) => {
-        if (!deleteUser || loadingDelete) return;
-        setLoadingDelete(true);
-        const userID = {
-            id: Number(deleteUser.id)
-        }
-        try {   
-            const response = await fetch(`https://api.maproflow.com/users`,
-            {
-              credentials: "include",      
-              method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(userID),
-            });
-            if (!response.ok) throw new Error("Failed to delete user");
-            setUsers(users.map(u =>
-              u.id === deleteUser.id ? { ...u, status: "inactive" } : u
-            ));
-            setShowDeleteModal(false);
-            setDeleteUser(null);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-          setLoadingDelete(false);
-        }
-      };
+  const handleDeleteUser = async (id: any) => {
+    if (!deleteUser || loadingDelete) return;
+    setLoadingDelete(true);
+    const userID = {
+      id: Number(deleteUser.id)
+    }
+    try {   
+      const response = await fetch(`https://api.maproflow.com/users`,
+      {
+        credentials: "include",      
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userID),
+      });
+      if (!response.ok) throw new Error("Failed to delete user");
+      setShowDeleteModal(false);
+      setDeleteUser(null);
+      refreshUsers();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoadingDelete(false);
+    }
+    };
 
 
     return <div className="min-h-screen flex flex-col items-center justify-start bg-blue-50 py-8 px-2">
@@ -217,7 +217,7 @@ const UserPage = () => {
               {filteredUsers.map((u, idx) => (
                 <tr
                   key={u.id}
-                  className={`transition-colors hover:bg-blue-100 text-base md:text-lg ${u.status === "u" ? "text-red-600" : ""}`}
+                  className={`transition-colors hover:bg-blue-100 text-base md:text-lg ${u.status !== 'a' ? "text-red-600" : ""}`}
                   style={{ cursor: "pointer" }}
                   onClick={e => {
                     if ((e.target as HTMLElement).tagName === "BUTTON") return;
@@ -409,8 +409,8 @@ const UserPage = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">สถานะ</label>
                   <select name="status" defaultValue={editUser.status} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="a">Active</option>
-                    <option value="u">Inactive</option>
+                    <option value="a">ยังใช้งาน</option>
+                    <option value="u">ไม่ใช้งาน</option>
                   </select>
                 </div>
               </div>

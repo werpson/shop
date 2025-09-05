@@ -1,6 +1,7 @@
 package adapters
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -85,6 +86,12 @@ func (h *HttpUserHandler) CreateUser(c *fiber.Ctx) error {
 
 func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 	var user entities.User
+
+	id, err := strconv.Atoi(c.FormValue("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user id"})
+	}
+	user.ID = id
 	user.Username = c.FormValue("username")
 	user.Password = c.FormValue("password")
 	user.F_name = c.FormValue("first_name")
@@ -119,25 +126,25 @@ func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 
 func (h *HttpUserHandler) DeleteUser(c *fiber.Ctx) error {
 	var user entities.User
-	user.Username = c.FormValue("username")
-	user.Password = c.FormValue("password")
-	user.F_name = c.FormValue("first_name")
-	user.L_name = c.FormValue("last_name")
-	user.Permission = c.FormValue("permission")
-	user.Status = "a"
 
-	// file, err := c.FormFile("image")
-	// if err != nil {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
-	// }
+	// Try to get "id" from form, query, or params as needed
+	idStr := c.FormValue("id")
+	if idStr == "" {
+		idStr = c.Query("id")
+	}
+	if idStr == "" {
+		idStr = c.Params("id")
+	}
+	if idStr == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing user id"})
+	}
 
-	// err = c.SaveFile(file, "./uploads/shop/"+file.Filename)
-
-	// if err != nil {
-	// 	return c.SendStatus(fiber.StatusBadGateway)
-	// }
-
-	// user.Image = file.Filename
+	// Convert id string to int
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user id"})
+	}
+	user.ID = id
 
 	user_id, err := auth.GetUserIDFromJWT(c)
 	if err != nil {
