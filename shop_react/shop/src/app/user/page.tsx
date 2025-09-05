@@ -82,10 +82,6 @@ const UserPage = () => {
       );
       if (loading) return <div>กำลังโหลดข้อมูล...</div>;
       if (error) return <div>เกิดข้อผิดพลาด: {error}</div>;
-      if (filteredUsers.length === 0) {
-        return <div className="p-4 text-center text-gray-400">NO DATA</div>;
-      }
-
 
       // ฟังก์ชันเพิ่มผู้ใช้งานใหม่
       const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
