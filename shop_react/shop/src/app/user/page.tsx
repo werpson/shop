@@ -246,18 +246,22 @@ const UserPage = () => {
                       แก้ไขข้อมูล
                     </button>
                   </td>
-                  <td className="px-2 py-3 text-center w-24">
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        setDeleteUser(u);
-                        setShowDeleteModal(true);
-                      }}
-                      className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-5 rounded-lg shadow transition-colors text-base md:text-lg"
-                    >
-                      ยกเลิกผู้ใช้งาน
-                    </button>
-                  </td>
+                    { (u.status === "a") ? (
+                      <td className="px-2 py-3 text-center w-24">
+                        <button
+                          onClick={e => {
+                            e.stopPropagation();
+                            setDeleteUser(u);
+                            setShowDeleteModal(true);
+                          }}
+                          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-5 rounded-lg shadow transition-colors text-base md:text-lg"
+                        >
+                          ยกเลิกผู้ใช้งาน
+                        </button>
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
                 </tr>
               ))}
             </tbody>
