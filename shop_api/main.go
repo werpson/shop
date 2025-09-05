@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	host     = "localhost" // or the Docker service name if running in another container
-	port     = 5432        // default PostgreSQL port
-	user     = "postgres"  // as defined in docker-compose.yml
-	password = "admin"     // as defined in docker-compose.yml
-	dbname   = "shop"      // as defined in docker-compose.yml
+	host     = "postgres" // or the Docker service name if running in another container
+	port     = 5432       // default PostgreSQL port
+	user     = "postgres" // as defined in docker-compose.yml
+	password = "admin"    // as defined in docker-compose.yml
+	dbname   = "shop"     // as defined in docker-compose.yml
 )
 
 func main() {
