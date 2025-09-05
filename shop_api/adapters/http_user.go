@@ -136,14 +136,6 @@ func (h *HttpUserHandler) DeleteUser(c *fiber.Ctx) error {
 		idStr = c.Params("id")
 	}
 	if idStr == "" {
-		var body struct {
-			UserID string `json:"user_id" form:"user_id"`
-		}
-		if err := c.BodyParser(&body); err == nil && body.UserID != "" {
-			idStr = body.UserID
-		}
-	}
-	if idStr == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing user id"})
 	}
 

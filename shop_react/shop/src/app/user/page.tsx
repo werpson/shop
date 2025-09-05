@@ -139,18 +139,14 @@ const UserPage = () => {
   const handleDeleteUser = async (id: any) => {
     if (!deleteUser || loadingDelete) return;
     setLoadingDelete(true);
-    const userID = {
-      id: Number(deleteUser.id)
-    }
+    const formData = new FormData();
+    formData.append("id", String(deleteUser.id));
     try {   
       const response = await fetch(`https://api.maproflow.com/users`,
       {
         credentials: "include",      
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userID),
+        body: formData,
       });
       if (!response.ok) throw new Error("Failed to delete user");
       setShowDeleteModal(false);
@@ -161,7 +157,7 @@ const UserPage = () => {
     } finally {
       setLoadingDelete(false);
     }
-    };
+  };
 
 
     return <div className="min-h-screen flex flex-col items-center justify-start bg-blue-50 py-8 px-2">
