@@ -147,7 +147,10 @@ const UserPage = () => {
       {
         credentials: "include",      
         method: "DELETE",
-        body: userID,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userID),
       });
       if (!response.ok) throw new Error("Failed to delete user");
       setShowDeleteModal(false);
